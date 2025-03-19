@@ -9,6 +9,13 @@ dist/
 web-build/
 expo-env.d.ts
 
+android
+ios
+web
+.env
+FirebaseConfig.ts
+.vscode
+
 # Native
 *.orig.*
 *.jks
