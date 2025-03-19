@@ -33,7 +33,7 @@ import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { storage } from "../../../FirebaseConfig";
+import { storage } from "../../FirebaseConfig";
 import ReactNativeBlobUtil from "react-native-blob-util";
 
 interface File {

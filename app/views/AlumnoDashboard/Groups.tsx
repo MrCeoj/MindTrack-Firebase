@@ -18,7 +18,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import { auth } from "../../../FirebaseConfig";
+import { auth } from "../../FirebaseConfig";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { set } from "date-fns";
 import { router } from "expo-router";

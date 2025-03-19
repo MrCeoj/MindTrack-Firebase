@@ -22,7 +22,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import { auth } from "../../../../FirebaseConfig";
+import { auth } from "../../../FirebaseConfig";
 import { Picker } from "@react-native-picker/picker";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 

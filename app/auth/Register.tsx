@@ -14,7 +14,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Link, router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, collection, doc, setDoc, getDocs } from "firebase/firestore";
-import { auth } from "../../FirebaseConfig";
+import { auth } from "../FirebaseConfig";
 
 const Welcome = require("@/assets/images/icon.png");
 

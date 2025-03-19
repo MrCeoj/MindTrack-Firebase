@@ -3,7 +3,7 @@ import { View, Text, Image, TextInput, Pressable, Alert } from "react-native";
 import { Link, router } from "expo-router";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { auth } from "../../FirebaseConfig";
+import { auth } from "../FirebaseConfig";
 
 const Welcome = require("@/assets/images/welcome.png");
 
