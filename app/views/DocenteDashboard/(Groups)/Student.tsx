@@ -29,12 +29,6 @@ import { format, set } from "date-fns";
 import { es } from "date-fns/locale";
 import { useEffect, useState } from "react";
 
-interface File {
-  name?: string;
-  uri: string;
-  type?: string;
-}
-
 interface FormatearFechaParams {
   fechaIso: string;
 }
@@ -60,8 +54,8 @@ interface GetAvgParams {
 
 export default function Student() {
   const auth = getAuth();
-  const { califs } = useLocalSearchParams();
-  const studentData = typeof califs === "string" ? JSON.parse(califs) : null;
+  const { data } = useLocalSearchParams();
+  const studentData = typeof data === "string" ? JSON.parse(data) : null;
   const [cargando, setCargando] = useState(true);
   const [userData, setUserData] = useState<any>(null);
   const [userId, setUserId] = useState("");
@@ -128,15 +122,14 @@ export default function Student() {
       const calificacionesRef = collection(db, "calificaciones");
       const querySnapshot = await getDocs(calificacionesRef);
       const califsData = querySnapshot.docs.map((doc) => doc.data());
-      console.log("Calificaciones:", califsData);
       setCargando(false);
 
       // Find the specific calificaciones document for the student
       const studentCalif = califsData.find(
         (calif) =>
-          calif.alumnoId === studentData[0].alumnoId &&
-          calif.grupoId === studentData[0].grupoId &&
-          calif.materiaId === studentData[0].materiaId
+          calif.alumnoId === studentData.alumnoId &&
+          calif.grupoId === studentData.grupoId &&
+          calif.materiaId === studentData.materiaId
       );
 
       if (!studentCalif) {
@@ -148,8 +141,6 @@ export default function Student() {
         parcial2: studentCalif.parcial2 || 0,
         parcial3: studentCalif.parcial3 || 0,
       });
-
-      console.log("Calificaciones del estudiante:", gradeValue);
     } catch (error) {
       console.error("Error al obtener calificaciones:", error);
       setError("No se pudieron cargar las calificaciones");
@@ -159,8 +150,7 @@ export default function Student() {
 
   useEffect(() => {
     if (studentData) {
-      setUserId(studentData[0].alumnoId);
-      console.log("Datos del estudiante:", studentData);
+      setUserId(studentData.alumnoId);
 
       // Obtener datos del usuario
       const db = getFirestore();
@@ -185,8 +175,6 @@ export default function Student() {
       };
 
       obtenerDatosUsuario();
-      console.log("Usuario autenticado:", auth.currentUser);
-      console.log("Datos del usuario:", userData);
     }
   }, []);
 
@@ -303,10 +291,7 @@ export default function Student() {
     const dataChart = Object.keys(datosEmocionales).map((key) => ({
       x: key as "bueno" | "regular" | "malo",
       y: datosEmocionales[key as "bueno" | "regular" | "malo"],
-      label:
-        datosEmocionales[key as "bueno" | "regular" | "malo"] > 0
-          ? `${key}: ${datosEmocionales[key as "bueno" | "regular" | "malo"]}`
-          : "",
+      label: "",
     }));
 
     // Si no hay datos, mostrar un mensaje apropiado
@@ -391,7 +376,7 @@ export default function Student() {
 
   // Function to save the updated grade
   const saveGrade = async () => {
-    if (!editingGrade || !studentData || !studentData[0]) return;
+    if (!editingGrade || !studentData) return;
 
     try {
       setIsUpdating(true);
@@ -400,9 +385,9 @@ export default function Student() {
       // Find the document ID by querying for the specific calificaciones document
       const calificacionesQuery = query(
         collection(db, "calificaciones"),
-        where("alumnoId", "==", studentData[0].alumnoId),
-        where("grupoId", "==", studentData[0].grupoId),
-        where("materiaId", "==", studentData[0].materiaId)
+        where("alumnoId", "==", studentData.alumnoId),
+        where("grupoId", "==", studentData.grupoId),
+        where("materiaId", "==", studentData.materiaId)
       );
 
       const querySnapshot = await getDocs(calificacionesQuery);
@@ -423,20 +408,17 @@ export default function Student() {
         return;
       }
 
+      // Update the document with the new grade
       await setDoc(docRef, { [editingGrade]: grade }, { merge: true });
 
-      const updatedStudentData = [...studentData];
-      updatedStudentData[0] = {
-        ...updatedStudentData[0],
-        [editingGrade]: grade,
-      };
-
-      Alert.alert("Éxito", "La calificación ha sido actualizada");
+      // Refresh the grades display
       fetchCalifs();
+
       setEditingGrade(null);
+
     } catch (error) {
       console.error("Error al actualizar calificación:", error);
-      Alert.alert("Error", "No se pudo actualizar la calificación");
+      Alert.alert("Error", "No se pudo actualizar la calificación, por favor intenta de nuevo.");
     } finally {
       setIsUpdating(false);
     }
@@ -625,6 +607,7 @@ export default function Student() {
                     labelRadius={120}
                     width={200}
                     height={200}
+                    labels={() => null}
                   />
                 </View>
               )}

@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View, ActivityIndicator, Pressable } from "react-native";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 interface Calif {
   id: string;
@@ -29,15 +30,11 @@ export default function Group() {
   const [loading, setLoading] = useState(true);
 
   const handleNavigation = (student: any) => {
-    const params = {
-      califs: JSON.stringify(getStudentCalifs(student.id)),
-    };
-
-    console.log("Navigating to StudentDetails with params:", params);
+    const studentCalifs = getStudentCalifs(student.id);
 
     router.push({
       pathname: "./Student",
-      params: { califs: JSON.stringify(califs) },
+      params: { data: JSON.stringify(studentCalifs) },
     });
   };
 
@@ -58,7 +55,6 @@ export default function Group() {
       try {
         const califsData: any[] = [];
 
-        // Query calificaciones collection for records matching this group
         const califsQuery = query(
           collection(db, "calificaciones"),
           where("grupoId", "==", grupoData.id)
@@ -138,7 +134,6 @@ export default function Group() {
     if (califs.parcial1 !== 0) count++;
     if (califs.parcial2 !== 0) count++;
     if (califs.parcial3 !== 0) count++;
-    console.log("count", count);
 
     if (count === 0) return 0;
 

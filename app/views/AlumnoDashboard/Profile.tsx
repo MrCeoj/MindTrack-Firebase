@@ -291,10 +291,7 @@ export default function Profile() {
     const dataChart = Object.keys(datosEmocionales).map((key) => ({
       x: key as "bueno" | "regular" | "malo",
       y: datosEmocionales[key as "bueno" | "regular" | "malo"],
-      label:
-        datosEmocionales[key as "bueno" | "regular" | "malo"] > 0
-          ? `${key}: ${datosEmocionales[key as "bueno" | "regular" | "malo"]}`
-          : "",
+      label: ""
     }));
 
     // Si no hay datos, mostrar un mensaje apropiado
@@ -779,6 +776,7 @@ export default function Profile() {
                     labelRadius={120}
                     width={200}
                     height={200}
+                    labels={() => null}
                   />
                 </View>
               )}
